@@ -1,12 +1,20 @@
-import { useContext, useState } from "react";
-import ProjectTasksContext from "./ProjectTasksContext";
+import React from "react";
+import { useState } from "react";
 
-export default function NewTask() {
-  const [enteredTask, setEnteredTask] = useState();
-  const { setProjectsState } = useContext(ProjectTasksContext);
+export default function NewTask({ onAdd }) {
+  const [enteredTask, setEnteredTask] = useState("");
 
   const handleChange = (event) => {
     setEnteredTask(event.target.value);
+  };
+
+  const handleClick = () => {
+    if (enteredTask.trim() === "") {
+      return;
+    }
+
+    onAdd(enteredTask);
+    setEnteredTask("");
   };
 
   return (
@@ -19,25 +27,7 @@ export default function NewTask() {
       />
       <button
         className="text-stone-700 hover:text-stone-950"
-        onClick={() =>
-          setProjectsState((prevState) => {
-            console.log(prevState);
-            const taskListIndex = prevState.tasks.findIndex(
-              (task) => task.id === prevState.selectedProjectId
-            );
-            if (taskListIndex !== -1) {
-              prevState.tasks[taskListIndex].taskList.push(enteredTask);
-              return { ...prevState };
-            } else {
-              return {
-                ...prevState,
-                tasks: [
-                  { id: prevState.selectedProjectId, taskList: [enteredTask] },
-                ],
-              };
-            }
-          })
-        }
+        onClick={handleClick}
       >
         Add Task
       </button>

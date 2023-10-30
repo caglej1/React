@@ -1,10 +1,9 @@
-import { useState } from "react";
+import React, { useState } from "react";
 
 import ProjectsSidebar from "./components/ProjectsSidebar";
 import NewProject from "./components/NewProject";
 import NoProjectSelected from "./components/NoProjectSelected";
 import SelectedProject from "./components/SelectedProject";
-import ProjectTasksContext from "./components/ProjectTasksContext";
 
 function App() {
   const [projectsState, setProjectsState] = useState({
@@ -12,6 +11,30 @@ function App() {
     projects: [],
     tasks: [],
   });
+
+  const handleAddTask = (text) => {
+    setProjectsState((prevState) => {
+      const newTask = {
+        text,
+        projectId: prevState.selectedProjectId,
+        id: Math.random(),
+      };
+
+      return {
+        ...prevState,
+        tasks: [...prevState.tasks, newTask],
+      };
+    });
+  };
+
+  const handleDeleteTask = (id) => {
+    setProjectsState((prevState) => {
+      return {
+        ...prevState,
+        tasks: prevState.tasks.filter((task) => task.id !== id),
+      };
+    });
+  };
 
   const handleSelectProject = (id) => {
     setProjectsState((prevState) => {
@@ -72,7 +95,13 @@ function App() {
   );
 
   let content = (
-    <SelectedProject project={selectedProject} onDelete={handleDeleteProject} />
+    <SelectedProject
+      project={selectedProject}
+      onDelete={handleDeleteProject}
+      onAddTask={handleAddTask}
+      onDeleteTask={handleDeleteTask}
+      tasks={projectsState.tasks}
+    />
   );
 
   if (projectsState.selectedProjectId === null) {
@@ -84,17 +113,15 @@ function App() {
   }
 
   return (
-    <ProjectTasksContext.Provider value={{projectsState, setProjectsState}}>
-      <main className="h-screen my-8 flex gap-8">
-        <ProjectsSidebar
-          onStartAddProject={handleStartAddProject}
-          onSelectProject={handleSelectProject}
-          projects={projectsState.projects}
-          selectedProjectId={projectsState.selectedProjectId}
-        />
-        {content}
-      </main>
-    </ProjectTasksContext.Provider>
+    <main className="h-screen my-8 flex gap-8">
+      <ProjectsSidebar
+        onStartAddProject={handleStartAddProject}
+        onSelectProject={handleSelectProject}
+        projects={projectsState.projects}
+        selectedProjectId={projectsState.selectedProjectId}
+      />
+      {content}
+    </main>
   );
 }
 
