@@ -4,7 +4,7 @@ import Layout from "./components/Layout/Layout";
 import Products from "./components/Shop/Products";
 import { useEffect } from "react";
 import Notification from "./components/UI/Notification";
-import { sendCartData } from "./store/cart-slice";
+import { fetchCartData, sendCartData } from "./store/cart-actions";
 
 let isInitial = true;
 
@@ -15,13 +15,19 @@ function App() {
   const notification = useSelector((state) => state.ui.notification);
 
   useEffect(() => {
+    dispatch(fetchCartData());
+  }, [dispatch]);
+
+  useEffect(() => {
     if (isInitial) {
       isInitial = false;
       return;
     }
 
-    // Redux toolkit accepts custom action creator thunk. It will execute the function returned by the thunk and pass dispatch() to it.
-    dispatch(sendCartData(cart));
+    if (cart.changed) {
+      // Redux toolkit accepts custom action creator thunk. It will execute the function returned by the thunk and pass dispatch() to it.
+      dispatch(sendCartData(cart));
+    }
   }, [cart, dispatch]);
   // react-redux ensures that the dispatch function never changes, thus it is safe to add to the dependency list.
 
