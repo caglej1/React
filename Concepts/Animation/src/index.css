@@ -280,12 +280,12 @@ main {
   display: inline-block;
   font-size: 0.85rem;
   margin-left: 0.25rem;
-  transition: transform 200ms ease-out;
+  /* transition: transform 200ms ease-out; */
 }
 
-.challenge-item-details.expanded .challenge-item-details-icon {
+/* .challenge-item-details.expanded .challenge-item-details-icon {
   transform: rotate(180deg);
-}
+} */
 
 .challenge-item-description {
   margin: 0;
